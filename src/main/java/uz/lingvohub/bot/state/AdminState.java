@@ -1,0 +1,15 @@
+package uz.lingvohub.bot.state;
+
+public enum AdminState {
+    NONE,
+    ADD_LANGUAGE_NAME,
+    ADD_TEACHER_NAME,
+    ADD_TEACHER_BIO,
+    ADD_TEACHER_RATING,
+    ADD_COURSE_TITLE,
+    ADD_COURSE_DESCRIPTION,
+    ADD_LESSON_TITLE,
+    ADD_LESSON_ORDER,
+    ADD_LESSON_CHANNEL_ID,
+    ADD_LESSON_MESSAGE_ID
+}

@@ -1,0 +1,32 @@
+# Build
+target/
+
+# SQLite
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# IDE
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Local secrets (copy from application-local.example.yml)
+src/main/resources/application-local.yml
+
+# Compiled
+*.class
+hs_err_pid*
+replay_pid*
