@@ -1,5 +1,7 @@
 # LingvoHub Telegram Bot
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 LingvoHub - bu Telegram ichida ishlaydigan ta'lim boti. Foydalanuvchi til, o'qituvchi, kurs va darslarni inline tugmalar orqali tanlaydi. Video darslar private kanallardan `copyMessage` orqali yuboriladi.
 
 ## Texnologiyalar
