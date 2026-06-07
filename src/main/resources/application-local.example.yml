@@ -6,7 +6,7 @@
 #   java -jar target/lingvohub-bot-1.0.0.jar --spring.profiles.active=local
 
 telegram:
-  bot-token: "123456789:AAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  bot-token: "replace-with-your-botfather-token"
   bot-username: "@your_bot_username"
   admin-ids:
     - 123456789

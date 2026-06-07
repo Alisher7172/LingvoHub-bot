@@ -20,7 +20,7 @@ telegram:
   # Local testing: use profile "local" + application-local.yml (see application-local.example.yml)
   bot-token: ${TELEGRAM_BOT_TOKEN}
   bot-username: ${TELEGRAM_BOT_USERNAME}
-  admin-ids: ${ADMIN_IDS:5950362872}
+  admin-ids: ${ADMIN_IDS:0}
 
 logging:
   level:
