@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: ${JDBC_DATABASE_URL}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+  main:
+    banner-mode: off
+    keep-alive: true
+
+telegram:
+  bot-token: ${TELEGRAM_BOT_TOKEN}
+  bot-username: ${TELEGRAM_BOT_USERNAME}
+  admin-ids: ${ADMIN_IDS:0}
+
+logging:
+  level:
+    root: INFO
+    uz.lingvohub: INFO
+    org.telegram: INFO
