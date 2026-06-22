@@ -11,6 +11,7 @@ public class AdminSession {
     private Long selectedLanguageId;
     private Long selectedTeacherId;
     private Long selectedCourseId;
+    private Long selectedLessonId;
     private String pendingTeacherName;
     private String pendingTeacherBio;
     private String pendingCourseTitle;

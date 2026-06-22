@@ -8,7 +8,7 @@ public interface BotGateway {
 
     void editText(Long chatId, Integer messageId, String text, InlineKeyboardMarkup keyboard);
 
-    void copyLesson(Long chatId, String channelId, Integer messageId);
+    boolean copyLesson(Long chatId, String channelId, Integer messageId);
 
     void answerCallback(String callbackQueryId, String text);
 }

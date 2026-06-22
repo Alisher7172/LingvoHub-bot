@@ -75,7 +75,7 @@ public class LingvoHubTelegramBot extends TelegramLongPollingBot implements BotG
     }
 
     @Override
-    public void copyLesson(Long chatId, String channelId, Integer messageId) {
+    public boolean copyLesson(Long chatId, String channelId, Integer messageId) {
         CopyMessage copyMessage = CopyMessage.builder()
                 .chatId(chatId.toString())
                 .fromChatId(channelId)
@@ -83,8 +83,11 @@ public class LingvoHubTelegramBot extends TelegramLongPollingBot implements BotG
                 .build();
         try {
             execute(copyMessage);
+            return true;
         } catch (TelegramApiException e) {
-            log.error("Darsni copyMessage bilan yuborishda xatolik", e);
+            log.error("Darsni copyMessage bilan yuborishda xatolik: fromChatId={}, messageId={}",
+                    channelId, messageId, e);
+            return false;
         }
     }
 

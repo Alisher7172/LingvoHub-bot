@@ -69,7 +69,10 @@ public class CallbackRouter {
                     botGateway.answerCallback(callbackQuery.getId(), "Bu premium dars. Avval obuna oling.");
                     return;
                 }
-                botGateway.copyLesson(chatId, lesson.getChannelId(), lesson.getMessageId());
+                if (!botGateway.copyLesson(chatId, lesson.getChannelId(), lesson.getMessageId())) {
+                    botGateway.sendText(chatId, "Darsni yuborib bo'lmadi. Admin channel_id va message_id ni tekshirsin.", null);
+                    return;
+                }
                 progressService.markCompleted(user, lesson);
                 botGateway.sendText(chatId, "Dars yuborildi.", keyboardFactory.nextLessonKeyboard(lesson.getCourseId(), lesson.getLessonOrder()));
             } else if (data.startsWith("next_")) {
@@ -85,7 +88,10 @@ public class CallbackRouter {
                     botGateway.answerCallback(callbackQuery.getId(), "Keyingi dars premium.");
                     return;
                 }
-                botGateway.copyLesson(chatId, next.getChannelId(), next.getMessageId());
+                if (!botGateway.copyLesson(chatId, next.getChannelId(), next.getMessageId())) {
+                    botGateway.sendText(chatId, "Darsni yuborib bo'lmadi. Admin channel_id va message_id ni tekshirsin.", null);
+                    return;
+                }
                 progressService.markCompleted(user, next);
                 botGateway.sendText(chatId, "Keyingi dars yuborildi.", keyboardFactory.nextLessonKeyboard(next.getCourseId(), next.getLessonOrder()));
             } else if ("back_start".equals(data) || "back_lang".equals(data)) {
@@ -143,6 +149,100 @@ public class CallbackRouter {
                 );
                 adminSession.setState(AdminState.NONE);
                 botGateway.sendText(chatId, "Dars saqlandi.", keyboardFactory.adminMenuKeyboard());
+            } else if ("admin_edit".equals(data) && isAdmin(telegramId)) {
+                botGateway.sendText(chatId, "Nimani tahrirlaysiz?", keyboardFactory.adminEditMenuKeyboard());
+            } else if ("admin_edit_language".equals(data) && isAdmin(telegramId)) {
+                botGateway.sendText(chatId, "Tilni tanlang:", keyboardFactory.selectLanguageForEdit(catalogService.languages()));
+            } else if (data.startsWith("admin_edit_language_item_") && isAdmin(telegramId)) {
+                Long languageId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedLanguageId(languageId);
+                botGateway.sendText(chatId, "Qaysi maydon tahrirlansin?", keyboardFactory.languageEditFieldsKeyboard(languageId));
+            } else if (data.startsWith("admin_edit_language_name_") && isAdmin(telegramId)) {
+                Long languageId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedLanguageId(languageId);
+                adminSession.setState(AdminState.EDIT_LANGUAGE_NAME);
+                botGateway.sendText(chatId, "Yangi til nomini kiriting:", null);
+            } else if ("admin_edit_teacher".equals(data) && isAdmin(telegramId)) {
+                botGateway.sendText(chatId, "Teacherni tanlang:", keyboardFactory.selectTeacherForEdit(catalogService.teachers()));
+            } else if (data.startsWith("admin_edit_teacher_item_") && isAdmin(telegramId)) {
+                Long teacherId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedTeacherId(teacherId);
+                botGateway.sendText(chatId, "Qaysi maydon tahrirlansin?", keyboardFactory.teacherEditFieldsKeyboard(teacherId));
+            } else if (data.startsWith("admin_edit_teacher_name_") && isAdmin(telegramId)) {
+                Long teacherId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedTeacherId(teacherId);
+                adminSession.setState(AdminState.EDIT_TEACHER_NAME);
+                botGateway.sendText(chatId, "Yangi teacher nomini kiriting:", null);
+            } else if (data.startsWith("admin_edit_teacher_bio_") && isAdmin(telegramId)) {
+                Long teacherId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedTeacherId(teacherId);
+                adminSession.setState(AdminState.EDIT_TEACHER_BIO);
+                botGateway.sendText(chatId, "Yangi teacher bio kiriting:", null);
+            } else if (data.startsWith("admin_edit_teacher_rating_") && isAdmin(telegramId)) {
+                Long teacherId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedTeacherId(teacherId);
+                adminSession.setState(AdminState.EDIT_TEACHER_RATING);
+                botGateway.sendText(chatId, "Yangi teacher reytingini kiriting (masalan 4.8):", null);
+            } else if ("admin_edit_course".equals(data) && isAdmin(telegramId)) {
+                botGateway.sendText(chatId, "Kursni tanlang:", keyboardFactory.selectCourseForEdit(catalogService.allCourses()));
+            } else if (data.startsWith("admin_edit_course_item_") && isAdmin(telegramId)) {
+                Long courseId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedCourseId(courseId);
+                botGateway.sendText(chatId, "Qaysi maydon tahrirlansin?", keyboardFactory.courseEditFieldsKeyboard(courseId));
+            } else if (data.startsWith("admin_edit_course_title_") && isAdmin(telegramId)) {
+                Long courseId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedCourseId(courseId);
+                adminSession.setState(AdminState.EDIT_COURSE_TITLE);
+                botGateway.sendText(chatId, "Yangi kurs nomini kiriting:", null);
+            } else if (data.startsWith("admin_edit_course_description_") && isAdmin(telegramId)) {
+                Long courseId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedCourseId(courseId);
+                adminSession.setState(AdminState.EDIT_COURSE_DESCRIPTION);
+                botGateway.sendText(chatId, "Yangi kurs tavsifini kiriting:", null);
+            } else if ("admin_edit_lesson".equals(data) && isAdmin(telegramId)) {
+                botGateway.sendText(chatId, "Kursni tanlang:", keyboardFactory.selectLessonCourseForEdit(catalogService.allCourses()));
+            } else if (data.startsWith("admin_edit_lesson_course_") && isAdmin(telegramId)) {
+                Long courseId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedCourseId(courseId);
+                botGateway.sendText(chatId, "Darsni tanlang:", keyboardFactory.selectLessonForEdit(catalogService.lessons(courseId)));
+            } else if (data.startsWith("admin_edit_lesson_item_") && isAdmin(telegramId)) {
+                Long lessonId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedLessonId(lessonId);
+                botGateway.sendText(chatId, "Qaysi maydon tahrirlansin?", keyboardFactory.lessonEditFieldsKeyboard(lessonId));
+            } else if (data.startsWith("admin_edit_lesson_title_") && isAdmin(telegramId)) {
+                Long lessonId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedLessonId(lessonId);
+                adminSession.setState(AdminState.EDIT_LESSON_TITLE);
+                botGateway.sendText(chatId, "Yangi dars nomini kiriting:", null);
+            } else if (data.startsWith("admin_edit_lesson_order_") && isAdmin(telegramId)) {
+                Long lessonId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedLessonId(lessonId);
+                adminSession.setState(AdminState.EDIT_LESSON_ORDER);
+                botGateway.sendText(chatId, "Yangi dars tartib raqamini kiriting:", null);
+            } else if (data.startsWith("admin_edit_lesson_channel_") && isAdmin(telegramId)) {
+                Long lessonId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedLessonId(lessonId);
+                adminSession.setState(AdminState.EDIT_LESSON_CHANNEL_ID);
+                botGateway.sendText(chatId, "Yangi channel_id kiriting:", null);
+            } else if (data.startsWith("admin_edit_lesson_message_") && isAdmin(telegramId)) {
+                Long lessonId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedLessonId(lessonId);
+                adminSession.setState(AdminState.EDIT_LESSON_MESSAGE_ID);
+                botGateway.sendText(chatId, "Yangi message_id kiriting:", null);
+            } else if (data.startsWith("admin_edit_lesson_premium_true_") && isAdmin(telegramId)) {
+                Long lessonId = Long.parseLong(data.split("_")[5]);
+                adminService.updateLessonPremium(lessonId, true);
+                adminSession.setState(AdminState.NONE);
+                botGateway.sendText(chatId, "Dars yangilandi.", keyboardFactory.adminMenuKeyboard());
+            } else if (data.startsWith("admin_edit_lesson_premium_false_") && isAdmin(telegramId)) {
+                Long lessonId = Long.parseLong(data.split("_")[5]);
+                adminService.updateLessonPremium(lessonId, false);
+                adminSession.setState(AdminState.NONE);
+                botGateway.sendText(chatId, "Dars yangilandi.", keyboardFactory.adminMenuKeyboard());
+            } else if (data.startsWith("admin_edit_lesson_premium_") && isAdmin(telegramId)) {
+                Long lessonId = Long.parseLong(data.split("_")[4]);
+                adminSession.setSelectedLessonId(lessonId);
+                botGateway.sendText(chatId, "Bu dars premiummi?", keyboardFactory.lessonPremiumEditKeyboard(lessonId));
             } else if ("admin_stats".equals(data) && isAdmin(telegramId)) {
                 String stats = "📊 Statistikalar:\\nFoydalanuvchilar: " + userService.count() + "\\nDarslar: " + adminService.totalLessons();
                 botGateway.sendText(chatId, stats, keyboardFactory.adminMenuKeyboard());

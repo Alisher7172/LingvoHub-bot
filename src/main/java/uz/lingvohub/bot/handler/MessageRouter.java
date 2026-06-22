@@ -60,7 +60,14 @@ public class MessageRouter {
 
         AdminSession adminSession = sessionService.adminSession(telegramId);
         if (adminSession.getState() != AdminState.NONE && telegramProperties.getAdminIds().contains(telegramId)) {
-            handleAdminState(chatId, text, adminSession, botGateway);
+            try {
+                handleAdminState(chatId, text, adminSession, botGateway);
+            } catch (NumberFormatException e) {
+                botGateway.sendText(chatId, "Raqam formatini to'g'ri kiriting.", null);
+            } catch (Exception e) {
+                adminSession.setState(AdminState.NONE);
+                botGateway.sendText(chatId, "Xatolik yuz berdi. Qayta urinib ko'ring.", keyboardFactory.adminMenuKeyboard());
+            }
         }
     }
 
@@ -114,6 +121,56 @@ public class MessageRouter {
             case ADD_LESSON_MESSAGE_ID -> {
                 session.setPendingLessonMessageId(Integer.parseInt(text));
                 botGateway.sendText(chatId, "Bu dars premiummi?", keyboardFactory.premiumToggleKeyboard());
+            }
+            case EDIT_LANGUAGE_NAME -> {
+                adminService.updateLanguageName(session.getSelectedLanguageId(), text);
+                session.setState(AdminState.NONE);
+                botGateway.sendText(chatId, "Til yangilandi.", keyboardFactory.adminMenuKeyboard());
+            }
+            case EDIT_TEACHER_NAME -> {
+                adminService.updateTeacherName(session.getSelectedTeacherId(), text);
+                session.setState(AdminState.NONE);
+                botGateway.sendText(chatId, "Teacher yangilandi.", keyboardFactory.adminMenuKeyboard());
+            }
+            case EDIT_TEACHER_BIO -> {
+                adminService.updateTeacherBio(session.getSelectedTeacherId(), text);
+                session.setState(AdminState.NONE);
+                botGateway.sendText(chatId, "Teacher yangilandi.", keyboardFactory.adminMenuKeyboard());
+            }
+            case EDIT_TEACHER_RATING -> {
+                adminService.updateTeacherRating(session.getSelectedTeacherId(), Double.parseDouble(text));
+                session.setState(AdminState.NONE);
+                botGateway.sendText(chatId, "Teacher yangilandi.", keyboardFactory.adminMenuKeyboard());
+            }
+            case EDIT_COURSE_TITLE -> {
+                adminService.updateCourseTitle(session.getSelectedCourseId(), text);
+                session.setState(AdminState.NONE);
+                botGateway.sendText(chatId, "Kurs yangilandi.", keyboardFactory.adminMenuKeyboard());
+            }
+            case EDIT_COURSE_DESCRIPTION -> {
+                adminService.updateCourseDescription(session.getSelectedCourseId(), text);
+                session.setState(AdminState.NONE);
+                botGateway.sendText(chatId, "Kurs yangilandi.", keyboardFactory.adminMenuKeyboard());
+            }
+            case EDIT_LESSON_TITLE -> {
+                adminService.updateLessonTitle(session.getSelectedLessonId(), text);
+                session.setState(AdminState.NONE);
+                botGateway.sendText(chatId, "Dars yangilandi.", keyboardFactory.adminMenuKeyboard());
+            }
+            case EDIT_LESSON_ORDER -> {
+                adminService.updateLessonOrder(session.getSelectedLessonId(), Integer.parseInt(text));
+                session.setState(AdminState.NONE);
+                botGateway.sendText(chatId, "Dars yangilandi.", keyboardFactory.adminMenuKeyboard());
+            }
+            case EDIT_LESSON_CHANNEL_ID -> {
+                adminService.updateLessonChannelId(session.getSelectedLessonId(), text);
+                session.setState(AdminState.NONE);
+                botGateway.sendText(chatId, "Dars yangilandi.", keyboardFactory.adminMenuKeyboard());
+            }
+            case EDIT_LESSON_MESSAGE_ID -> {
+                adminService.updateLessonMessageId(session.getSelectedLessonId(), Integer.parseInt(text));
+                session.setState(AdminState.NONE);
+                botGateway.sendText(chatId, "Dars yangilandi.", keyboardFactory.adminMenuKeyboard());
             }
             default -> botGateway.sendText(chatId, "Noto'g'ri holat.", null);
         }
