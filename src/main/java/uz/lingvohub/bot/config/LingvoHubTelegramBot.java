@@ -41,7 +41,7 @@ public class LingvoHubTelegramBot extends TelegramLongPollingBot implements BotG
         try {
             updateController.handle(update, this);
         } catch (Exception e) {
-            log.error("Update qayta ishlashda xatolik", e);
+            log.error("Update qilishda xatolik", e);
         }
     }
 

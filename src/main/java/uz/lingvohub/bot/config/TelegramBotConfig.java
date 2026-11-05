@@ -26,7 +26,7 @@ public class TelegramBotConfig {
                 log.info("Telegram long polling ishga tushdi. Bot: @{}, session running: {}",
                         bot.getBotUsername(), session.isRunning());
             } catch (TelegramApiException e) {
-                log.error("Botni Telegramga ulab bo'lmadi. Token va internetni tekshiring.", e);
+                log.error("Botni Telegramda topib bo'lmadi. Token va internetni tekshiring.", e);
                 throw new IllegalStateException("Telegram bot registration failed", e);
             }
         };

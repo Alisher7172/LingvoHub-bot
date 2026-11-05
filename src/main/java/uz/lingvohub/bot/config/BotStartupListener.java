@@ -16,7 +16,5 @@ public class BotStartupListener implements ApplicationListener<ApplicationReadyE
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         log.info("LingvoHub tayyor. Bot: @{}", bot.getBotUsername());
-        log.info("Telegramda /start yuboring. To'xtatish: Ctrl+C");
-        log.info("Eslatma: bitta token bilan faqat bitta jarayon ishlashi kerak.");
     }
 }

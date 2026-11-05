@@ -95,7 +95,7 @@ public class CallbackRouter {
                 progressService.markCompleted(user, next);
                 botGateway.sendText(chatId, "Keyingi dars yuborildi.", keyboardFactory.nextLessonKeyboard(next.getCourseId(), next.getLessonOrder()));
             } else if ("back_start".equals(data) || "back_lang".equals(data)) {
-                botGateway.editText(chatId, messageId, "Tilni tanlang:", keyboardFactory.languageKeyboard(catalogService.languages()));
+                botGateway.editText(chatId, messageId, "Qaysi tilni o'rganishni istaysiz?", keyboardFactory.languageKeyboard(catalogService.languages()));
             } else if (data.startsWith("back_teacher_")) {
                 Long languageId = Long.parseLong(data.split("_")[2]);
                 botGateway.editText(chatId, messageId, "O'qituvchini tanlang:", keyboardFactory.teacherKeyboard(catalogService.teachers(), languageId));
