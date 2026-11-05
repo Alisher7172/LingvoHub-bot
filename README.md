@@ -50,3 +50,5 @@ Admin faqat `ADMIN_IDS` ro'yxatidagi Telegram IDlar uchun ishlaydi.
 - kurs -> darslar ro'yxati (`✅` progress, `🔒` premium)
 - dars -> video `copyMessage` bilan yuboriladi
 - keyingi dars tugmasi orqali davom etish
+
+## NEW FEATURES ARE ON THE WAY ## 
