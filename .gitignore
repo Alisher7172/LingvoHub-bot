@@ -24,6 +24,7 @@ Thumbs.db
 logs/
 
 # Local secrets (copy from application-local.example.yml)
+/application-local.yml
 src/main/resources/application-local.yml
 
 # Compiled

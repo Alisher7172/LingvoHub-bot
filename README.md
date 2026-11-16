@@ -1,54 +1,64 @@
 # LingvoHub Telegram Bot
 
-![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+LingvoHub is a Java Telegram bot for browsing language courses, teachers, and lessons. Lesson progress and catalog data are stored locally in SQLite.
 
-LingvoHub - bu Telegram ichida ishlaydigan ta'lim boti. Foydalanuvchi til, o'qituvchi, kurs va darslarni inline tugmalar orqali tanlaydi. Video darslar private kanallardan `copyMessage` orqali yuboriladi.
-
-## Texnologiyalar
+## Requirements
 
 - Java 21
-- Spring Boot 3
-- SQLite (`database.db`)
-- TelegramBots Java
-- Maven
-- Lombok
+- Maven 3.9 or later
+- A Telegram bot token from [@BotFather](https://t.me/BotFather)
 
-## Ishga tushirish (local)
+## Local configuration
 
-### Variant A: `application-local.yml` (tavsiya etiladi)
+Copy `src/main/resources/application-local.example.yml` to the project root as `application-local.yml`. The local file is ignored by Git and excluded from the packaged JAR. Set your Telegram bot token, username, and administrator Telegram IDs in it. Do not commit real credentials.
 
-1. Shablonni nusxalang (birinchi marta):
-   - `cp src/main/resources/application-local.example.yml src/main/resources/application-local.yml`
-   - Windows uchun: `copy src\main\resources\application-local.example.yml src\main\resources\application-local.yml`
-2. `application-local.yml` ichiga BotFather token => @BotFather, username va admin Telegram ID yozing => @id_bot
-3. Ishga tushiring:
-   - PowerShell: `.\run-local.ps1`
-   - Git Bash: `./run-local.sh`
-   - yoki: `mvn spring-boot:run -Dspring-boot.run.profiles=local`
-   - JAR: `java -jar target/lingvohub-bot-1.0.0.jar --spring.profiles.active=local`
+The local profile uses `./database.db` in the project directory. Hibernate updates the existing schema in place; the application does not recreate the database on restart.
 
-`application-local.yml` gitga kirmaydi (`.gitignore` da).
+## Run locally
 
-### Variant B: muhit o'zgaruvchilari (VPS / CI)
+From IntelliJ IDEA, run `uz.lingvohub.bot.LingvoHubApplication` with the active profile set to `local` in the Run Configuration and the project root as the working directory.
 
-1. Sozlang: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME`, `ADMIN_IDS`
-2. `mvn clean package`
-3. `java -jar target/lingvohub-bot-1.0.0.jar`
+From Windows PowerShell:
 
-## Admin buyruqlari
+```powershell
+.\run-local.ps1
+```
 
-- `/admin` - admin menyu
-- `/stats` - qisqa statistika
+From Git Bash:
 
-Admin faqat `ADMIN_IDS` ro'yxatidagi Telegram IDlar uchun ishlaydi.
+```bash
+./run-local.sh
+```
 
-## Asosiy user flow
+The first run of either script creates the ignored root-level local configuration file from the example if it is missing. If an older ignored configuration exists under `src/main/resources`, the script copies it to the root first. Fill in credentials if needed, then run the script again.
 
-- `/start` -> til tanlash
-- til -> o'qituvchi tanlash
-- o'qituvchi -> kurs tanlash
-- kurs -> darslar ro'yxati (`✅` progress, `🔒` premium)
-- dars -> video `copyMessage` bilan yuboriladi
-- keyingi dars tugmasi orqali davom etish
+You can also start the bot directly with Maven:
 
-## NEW FEATURES ARE ON THE WAY ## 
+```powershell
+mvn spring-boot:run "-Dspring-boot.run.profiles=local"
+```
+
+Or package and run it:
+
+```powershell
+mvn clean package
+java -jar target/lingvohub-bot-1.0.0.jar --spring.profiles.active=local
+```
+
+To use environment variables instead of a local YAML file, set `TELEGRAM_BOT_TOKEN`, `TELEGRAM_BOT_USERNAME`, and `ADMIN_IDS`, then run without the `local` profile. The default SQLite file remains `database.db` in the current working directory.
+
+## Tests
+
+Run the automated tests with:
+
+```powershell
+mvn test
+```
+
+## Bot commands
+
+- `/start` opens language selection.
+- `/admin` opens the administrator menu for configured administrator IDs.
+- `/stats` shows basic statistics to administrators.
+
+The bot uses Telegram long polling. Closing the Spring application stops the polling session.

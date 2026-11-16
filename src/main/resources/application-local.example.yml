@@ -1,9 +1,17 @@
-# Copy this file to application-local.yml and fill in your values.
-# application-local.yml is gitignored — never commit real tokens.
+# Copy this file to the project root as application-local.yml and fill in your values.
+# application-local.yml is gitignored and kept outside the packaged JAR.
 #
 # Run with:
 #   mvn spring-boot:run -Dspring-boot.run.profiles=local
 #   java -jar target/lingvohub-bot-1.0.0.jar --spring.profiles.active=local
+
+spring:
+  datasource:
+    url: jdbc:sqlite:./database.db
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    hibernate:
+      ddl-auto: update
 
 telegram:
   bot-token: "replace-with-your-botfather-token"
